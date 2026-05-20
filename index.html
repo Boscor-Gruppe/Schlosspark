@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Schlosspark Reitzenstein</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--park-green:#2C4A3E;--park-green-light:#3A6355;--gold:#B8860B;--gold-light:#D4A843;--cream:#F5F0E8;--cream-dark:#E8E1D4;--brown:#6B4C3B;--anthracite:#1A1A1A;--white:#FFFFFF;--shadow:rgba(44,74,62,0.12);--radius:12px;--radius-sm:8px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Source Sans 3',sans-serif;background:var(--cream);color:var(--anthracite);max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden}
+.screen{display:none;min-height:100vh;padding-bottom:80px;animation:fadeIn .3s ease}.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.hero{position:relative;height:60vh;min-height:400px;background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:40px 24px;text-align:center}
+.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(44,74,62,.15) 0%,rgba(44,74,62,.6) 50%,rgba(44,74,62,.92) 100%)}
+.hero>*{position:relative;z-index:1}
+.hero-crest{width:56px;height:56px;border:1.5px solid var(--gold-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:14px;background:rgba(255,255,255,.08);backdrop-filter:blur(4px)}
+.hero-crest svg{width:28px;height:28px}
+.hero h1{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--white);line-height:1.15;margin-bottom:4px}
+.hero .subtitle{font-family:'Playfair Display',serif;font-size:15px;font-weight:400;font-style:italic;color:var(--gold-light);margin-bottom:16px;letter-spacing:.5px}
+.hero .divider{width:48px;height:1px;background:var(--gold);margin:0 auto 16px}
+.hero p{font-size:14px;line-height:1.6;color:rgba(255,255,255,.85);max-width:320px}
+.home-actions{padding:24px 20px;display:flex;flex-direction:column;gap:12px}
+.btn-primary{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--park-green);color:var(--white);font-family:'Source Sans 3',sans-serif;font-size:16px;font-weight:600;padding:16px 24px;border-radius:var(--radius);border:none;cursor:pointer;box-shadow:0 4px 16px var(--shadow);transition:all .2s}
+.btn-primary:active{transform:scale(.97)}
+.btn-secondary{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--white);color:var(--park-green);font-family:'Source Sans 3',sans-serif;font-size:16px;font-weight:600;padding:16px 24px;border-radius:var(--radius);border:1.5px solid var(--park-green);cursor:pointer;transition:all .2s}
+.btn-secondary:active{transform:scale(.97)}
+.home-info{padding:0 20px 24px;display:flex;gap:12px}
+.info-chip{flex:1;background:var(--white);border-radius:var(--radius-sm);padding:14px;text-align:center;box-shadow:0 2px 8px var(--shadow)}
+.info-chip .icon{font-size:20px;margin-bottom:4px}.info-chip .label{font-size:11px;color:var(--brown);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.info-chip .value{font-family:'Playfair Display',serif;font-size:18px;color:var(--park-green);font-weight:600}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--park-green);position:sticky;top:0;z-index:100}
+.topbar-back{width:36px;height:36px;background:rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer}
+.topbar-back svg{width:18px;height:18px}
+.topbar-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--white)}
+.topbar-spacer{width:36px}
+.station-list{padding:20px;display:flex;flex-direction:column;gap:14px}
+.station-card{background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 12px var(--shadow);cursor:pointer;transition:transform .2s;display:flex;min-height:100px}
+.station-card:active{transform:scale(.98)}
+.station-card-img{width:120px;min-height:100px;background:var(--cream-dark);position:relative;flex-shrink:0;overflow:hidden}
+.station-card-img img{width:100%;height:100%;object-fit:cover;display:block}
+.station-number{position:absolute;top:8px;left:8px;width:28px;height:28px;background:var(--gold);color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:13px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.station-card-body{padding:14px 16px;flex:1;display:flex;flex-direction:column;justify-content:center}
+.station-card-body h3{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--park-green);margin-bottom:4px}
+.station-card-body p{font-size:13px;line-height:1.4;color:var(--brown);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.station-card-features{display:flex;gap:6px;margin-top:8px}
+.feature-tag{font-size:10px;font-weight:600;background:var(--cream);color:var(--park-green);padding:3px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px}
+.detail-hero{height:300px;background:var(--cream-dark);position:relative;overflow:hidden}
+.detail-hero img{width:100%;height:100%;object-fit:cover}
+.detail-station-badge{position:absolute;bottom:-20px;left:20px;width:44px;height:44px;background:var(--gold);color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;box-shadow:0 4px 12px rgba(184,134,11,.3);border:3px solid var(--white)}
+.detail-content{padding:36px 20px 20px}
+.detail-content h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--park-green);margin-bottom:4px}
+.detail-epoch{font-size:13px;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px}
+.detail-divider{width:40px;height:2px;background:var(--gold);margin-bottom:16px}
+.detail-text{font-size:15px;line-height:1.7;color:var(--anthracite);margin-bottom:20px}
+.gallery-strip{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 20px 12px;-webkit-overflow-scrolling:touch}
+.gallery-strip::-webkit-scrollbar{display:none}
+.gallery-strip img{width:85%;flex-shrink:0;border-radius:var(--radius-sm);object-fit:cover;height:200px;scroll-snap-align:start}
+.gallery-caption{font-size:12px;color:var(--brown);font-style:italic;text-align:center;margin-bottom:20px}
+.audio-player{background:var(--white);border-radius:var(--radius);padding:16px;margin-bottom:20px;box-shadow:0 2px 8px var(--shadow);display:flex;align-items:center;gap:14px}
+.audio-btn{width:44px;height:44px;background:var(--park-green);border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;flex-shrink:0}
+.audio-btn svg{width:18px;height:18px}
+.audio-info{flex:1}.audio-label{font-size:12px;color:var(--brown);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.audio-progress{width:100%;height:4px;background:var(--cream-dark);border-radius:2px;overflow:hidden}
+.audio-progress-fill{height:100%;width:0;background:var(--gold);border-radius:2px;transition:width .3s}
+.audio-time{font-size:11px;color:var(--brown);margin-top:4px}
+.comparison-section{margin-bottom:20px}
+.comparison-label{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--park-green);margin-bottom:12px}
+.comparison-container{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 8px var(--shadow);touch-action:none;user-select:none;cursor:ew-resize}
+.comparison-container img{width:100%;display:block}
+.comparison-overlay{position:absolute;top:0;left:0;bottom:0;width:50%;overflow:hidden}
+.comparison-overlay img{position:absolute;top:0;left:0;width:200%;max-width:none;height:100%;object-fit:cover}
+.slider-line{position:absolute;top:0;bottom:0;left:50%;width:3px;background:var(--white);transform:translateX(-50%);z-index:10;pointer-events:none}
+.slider-circle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;background:var(--white);border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;z-index:11;pointer-events:none}
+.slider-circle::after{content:'\25C0  \25B6';font-size:10px;color:var(--park-green);letter-spacing:2px}
+.comparison-tag{position:absolute;bottom:10px;padding:4px 12px;background:rgba(0,0,0,.55);color:var(--white);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-radius:12px;z-index:5;pointer-events:none}
+.comparison-tag.left{left:10px}.comparison-tag.right{right:10px}
+.comparison-labels-row{display:flex;justify-content:space-between;padding:8px 0 0}
+.comparison-labels-row span{font-size:12px;color:var(--brown);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.map-container{margin:20px;background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 12px var(--shadow)}
+.map-illustration{height:420px;background:linear-gradient(160deg,#C5D5C0 0%,#A8C4A0 30%,#8FB588 60%,#B5C9A8 100%);position:relative;overflow:hidden}
+.map-illustration::before{content:'';position:absolute;top:40px;left:20px;right:20px;bottom:40px;border:2px dashed rgba(44,74,62,.25);border-radius:60% 40% 50% 45%}
+.map-pin{position:absolute;width:32px;height:32px;background:var(--gold);color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;box-shadow:0 3px 8px rgba(184,134,11,.35);cursor:pointer;border:2.5px solid var(--white);transition:transform .2s;z-index:5}
+.map-pin:active{transform:scale(1.15)}.map-pin.active-pin{background:var(--park-green);transform:scale(1.15)}
+.map-label{position:absolute;font-size:10px;font-weight:600;color:var(--park-green);text-shadow:0 1px 3px rgba(255,255,255,.8);pointer-events:none;white-space:nowrap;z-index:4}
+.map-schloss{position:absolute;top:80px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:600;color:var(--park-green);background:rgba(255,255,255,.7);padding:4px 10px;border-radius:6px;text-align:center;z-index:3}
+.map-schloss::before{content:'\1F3F0';display:block;font-size:24px;margin-bottom:2px}
+.map-legend{padding:14px 16px;display:flex;align-items:center;gap:16px;border-top:1px solid var(--cream)}
+.map-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--brown)}
+.map-legend-dot{width:10px;height:10px;border-radius:50%}
+.history-content{padding:20px}
+.history-intro{font-size:15px;line-height:1.7;color:var(--anthracite);margin-bottom:24px}
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,var(--gold),var(--park-green))}
+.timeline-item{position:relative;margin-bottom:24px;padding-left:12px}
+.timeline-item::before{content:'';position:absolute;left:-24px;top:6px;width:12px;height:12px;background:var(--gold);border-radius:50%;border:2px solid var(--cream)}
+.timeline-year{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--park-green);margin-bottom:2px}
+.timeline-event{font-size:14px;line-height:1.5;color:var(--brown)}
+.info-content{padding:20px}
+.info-block{background:var(--white);border-radius:var(--radius);padding:20px;margin-bottom:14px;box-shadow:0 2px 8px var(--shadow)}
+.info-block h3{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:var(--park-green);margin-bottom:8px}
+.info-block p{font-size:14px;line-height:1.6;color:var(--anthracite)}
+.partner-logos{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+.partner-logo{background:var(--cream);border-radius:var(--radius-sm);padding:10px 16px;font-size:11px;font-weight:600;color:var(--park-green);text-transform:uppercase;letter-spacing:.3px}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--white);border-top:1px solid var(--cream-dark);display:flex;padding:6px 0 env(safe-area-inset-bottom,8px);z-index:200;box-shadow:0 -2px 12px var(--shadow)}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 4px;border:none;background:none;cursor:pointer;color:var(--brown);transition:color .2s}
+.tab-item.active{color:var(--park-green)}.tab-item svg{width:22px;height:22px;margin-bottom:3px}
+.tab-item span{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.mockup-badge{position:fixed;top:0;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--white);font-size:10px;font-weight:600;padding:3px 14px;border-radius:0 0 8px 8px;z-index:300;letter-spacing:.5px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="mockup-badge">Mock-Up — Schlosspark App</div>
+
+<div id="screen-home" class="screen active">
+  <div class="hero" style="background-image:url('img/schlosshof.jpg')">
+    <div class="hero-crest"><svg viewBox="0 0 24 24" fill="none" stroke="#B8860B" stroke-width="1.5"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z"/><path d="M12 7v10M7 9.5l5 2.5 5-2.5"/></svg></div>
+    <h1>Schlosspark<br>Reitzenstein</h1>
+    <div class="subtitle">Baudenkmal seit dem 18. Jahrhundert</div>
+    <div class="divider"></div>
+    <p>Entdecken Sie den historischen Schlosspark — seinen Landschaftsgarten, den Barockgarten und die Geschichte derer von Reitzenstein.</p>
+  </div>
+  <div class="home-info">
+    <div class="info-chip"><div class="icon">&#x1F333;</div><div class="value">7</div><div class="label">Stationen</div></div>
+    <div class="info-chip"><div class="icon">&#x1F3A7;</div><div class="value">~5 Min</div><div class="label">Audioguide</div></div>
+    <div class="info-chip"><div class="icon">&#x1F4D0;</div><div class="value">1,4 ha</div><div class="label">Parkfläche</div></div>
+  </div>
+  <div class="home-actions">
+    <button class="btn-primary" onclick="showScreen('stations')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>Rundgang starten</button>
+    <button class="btn-secondary" onclick="showScreen('map')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16M16 6v16"/></svg>Karte öffnen</button>
+  </div>
+</div>
+
+<div id="screen-stations" class="screen">
+  <div class="topbar"><button class="topbar-back" onclick="showScreen('home')"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button><span class="topbar-title">Rundgang</span><div class="topbar-spacer"></div></div>
+  <div class="station-list">
+    <div class="station-card" onclick="showStation(0)"><div class="station-card-img"><img src="img/prolog_thumb.jpg" alt="Neues Tor"><div class="station-number">P</div></div><div class="station-card-body"><h3>Prolog — Das Neue Tor</h3><p>Ein repräsentativer Zugang zum Schlosspark</p><div class="station-card-features"><span class="feature-tag">Audio</span><span class="feature-tag">Fotomontage</span></div></div></div>
+    <div class="station-card" onclick="showStation(1)"><div class="station-card-img"><img src="img/bauerngarten_thumb.jpg" alt="Bauerngarten"><div class="station-number">1</div></div><div class="station-card-body"><h3>Der Bauerngarten</h3><p>Nutzgartenkultur am Fuß des Schlossbergs</p><div class="station-card-features"><span class="feature-tag">Audio</span><span class="feature-tag">Foto</span></div></div></div>
+    <div class="station-card" onclick="showStation(2)"><div class="station-card-img"><img src="img/landschaft_thumb.jpg" alt="Landschaftsgarten"><div class="station-number">2</div></div><div class="station-card-body"><h3>Englischer Landschaftsgarten</h3><p>Geschwungene Wege und komponierter Baumbestand</p><div class="station-card-features"><span class="feature-tag">Audio</span><span class="feature-tag">Vorher/Nachher</span></div></div></div>
+    <div class="station-card" onclick="showStation(3)"><div class="station-card-img"><img src="img/friedhof_thumb.jpg" alt="Familienfriedhof"><div class="station-number">3</div></div><div class="station-card-body"><h3>Der Familienfriedhof</h3><p>Grabsteine aus Jahrhunderten auf dem Burgberg</p><div class="station-card-features"><span class="feature-tag">Audio</span><span class="feature-tag">Vorher/Nachher</span></div></div></div>
+    <div class="station-card" onclick="showStation(4)"><div class="station-card-img"><img src="img/aufgang_thumb.jpg" alt="Aufgang"><div class="station-number">4</div></div><div class="station-card-body"><h3>Aufgang zum Schlosshof</h3><p>Vom Burgberg zum Höhepunkt des Rundwegs</p><div class="station-card-features"><span class="feature-tag">Audio</span><span class="feature-tag">Vorher/Nachher</span></div></div></div>
+    <div class="station-card" onclick="showStation(5)"><div class="station-card-img"><img src="img/schlosshof_thumb.jpg" alt="Schlosshof"><div class="station-number">5</div></div><div class="station-card-body"><h3>Der Schlosshof</h3><p>Herzstück der Anlage mit Blick aufs Schloss</p><div class="station-card-features"><span class="feature-tag">Audio</span><span class="feature-tag">Galerie</span></div></div></div>
+    <div class="station-card" onclick="showStation(6)"><div class="station-card-img"><img src="img/barock_thumb.jpg" alt="Barockgarten"><div class="station-number">6</div></div><div class="station-card-body"><h3>Der Barockgarten</h3><p>Der älteste Teil der Parkanlage</p><div class="station-card-features"><span class="feature-tag">Audio</span><span class="feature-tag">Vorher/Nachher</span></div></div></div>
+    <div class="station-card" onclick="showStation(7)"><div class="station-card-img"><img src="img/schlosstor_thumb.jpg" alt="Schlosstor"><div class="station-number">F</div></div><div class="station-card-body"><h3>Finale — Das Schlosstor</h3><p>Historischer Ausgang und Abschluss</p><div class="station-card-features"><span class="feature-tag">Audio</span><span class="feature-tag">Vorher/Nachher</span></div></div></div>
+  </div>
+</div>
+
+<div id="screen-detail" class="screen">
+  <div class="topbar"><button class="topbar-back" onclick="showScreen('stations')"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button><span class="topbar-title" id="detail-topbar-title">Station</span><div class="topbar-spacer"></div></div>
+  <div class="detail-hero"><img id="detail-hero-img" src="" alt=""><div class="detail-station-badge" id="detail-badge">2</div></div>
+  <div id="detail-gallery"></div>
+  <div class="detail-content">
+    <h2 id="detail-title"></h2><div class="detail-epoch" id="detail-epoch"></div><div class="detail-divider"></div>
+    <p class="detail-text" id="detail-text"></p>
+    <div class="audio-player"><button class="audio-btn" id="audio-play-btn" onclick="toggleAudio()"><svg id="play-icon" viewBox="0 0 24 24" fill="#fff"><polygon points="8,5 19,12 8,19"/></svg></button><div class="audio-info"><div class="audio-label">Audioguide</div><div class="audio-progress"><div class="audio-progress-fill" id="audio-progress-fill"></div></div><div class="audio-time" id="audio-time">0:00 / 0:30</div></div></div>
+    <div id="detail-comparison"></div>
+  </div>
+</div>
+
+<div id="screen-map" class="screen">
+  <div class="topbar"><button class="topbar-back" onclick="showScreen('home')"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button><span class="topbar-title">Parkkarte</span><div class="topbar-spacer"></div></div>
+  <div class="map-container"><div class="map-illustration">
+    <div class="map-schloss">Schloss<br>Reitzenstein</div>
+    <div class="map-pin" style="top:350px;left:40px" onclick="showStation(0)">P</div><div class="map-label" style="top:355px;left:78px">Neues Tor</div>
+    <div class="map-pin" style="top:300px;left:80px" onclick="showStation(1)">1</div><div class="map-label" style="top:305px;left:118px">Bauerngarten</div>
+    <div class="map-pin" style="top:260px;left:40px" onclick="showStation(2)">2</div><div class="map-label" style="top:245px;left:15px">Landschaftsgarten</div>
+    <div class="map-pin" style="top:190px;left:70px" onclick="showStation(3)">3</div><div class="map-label" style="top:195px;left:108px">Familienfriedhof</div>
+    <div class="map-pin" style="top:140px;left:130px" onclick="showStation(4)">4</div><div class="map-label" style="top:145px;left:168px">Aufgang</div>
+    <div class="map-pin active-pin" style="top:105px;left:200px" onclick="showStation(5)">5</div><div class="map-label" style="top:110px;left:238px">Schlosshof</div>
+    <div class="map-pin" style="top:140px;left:280px" onclick="showStation(6)">6</div><div class="map-label" style="top:125px;left:270px">Barockgarten</div>
+    <div class="map-pin" style="top:200px;left:320px" onclick="showStation(7)">F</div><div class="map-label" style="top:205px;left:355px">Schlosstor</div>
+  </div>
+  <div class="map-legend"><div class="map-legend-item"><div class="map-legend-dot" style="background:var(--gold)"></div> Station</div><div class="map-legend-item"><div class="map-legend-dot" style="background:var(--park-green)"></div> Aktuell</div><div class="map-legend-item"><div style="width:16px;height:2px;border-top:2px dashed var(--park-green);opacity:.4"></div> Rundweg</div></div></div>
+</div>
+
+<div id="screen-history" class="screen">
+  <div class="topbar"><button class="topbar-back" onclick="showScreen('home')"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button><span class="topbar-title">Familiengeschichte</span><div class="topbar-spacer"></div></div>
+  <div class="history-content">
+    <p class="history-intro">Die Familie von Reitzenstein ist seit Jahrhunderten mit dem Ort Reitzenstein und dem gleichnamigen Schloss im Frankenwald verbunden.</p>
+    <div class="timeline">
+      <div class="timeline-item"><div class="timeline-year">13. Jh.</div><div class="timeline-event">Erste urkundliche Erwähnung der Herren von Reitzenstein. Errichtung eines befestigten Sitzes auf dem Burgberg.</div></div>
+      <div class="timeline-item"><div class="timeline-year">Mitte 18. Jh.</div><div class="timeline-event">Anlage des Terrassengartens (Barockgarten) mit Pergola, Skulpturen und symmetrischen Beeten.</div></div>
+      <div class="timeline-item"><div class="timeline-year">1893–1897</div><div class="timeline-event">Gestaltung des Schlossgartens im englischen Stil mit geschwungenen Spazierwegen und Sichtachsen.</div></div>
+      <div class="timeline-item"><div class="timeline-year">20. Jh.</div><div class="timeline-event">Allmähliche Verwilderung der Parkanlage. Nicht-historische Einbauten verändern das Erscheinungsbild.</div></div>
+      <div class="timeline-item"><div class="timeline-year">2023</div><div class="timeline-event">Vorstudie des Büros Wiegel (Bamberg) dokumentiert Zustand und Potenzial der Parkanlage.</div></div>
+      <div class="timeline-item"><div class="timeline-year">2026</div><div class="timeline-event">LEADER-Förderantrag für Wiederherstellung und digitale Erschließung des Schlossparks.</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="screen-info" class="screen">
+  <div class="topbar"><button class="topbar-back" onclick="showScreen('home')"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button><span class="topbar-title">Über den Park</span><div class="topbar-spacer"></div></div>
+  <div class="info-content">
+    <div class="info-block"><h3>Baudenkmal</h3><p>Schloss Reitzenstein ist ein eingetragenes Baudenkmal (D-4-75-137-7) im Landkreis Hof. Die Denkmalbeschreibung umfasst beide Gartenanlagen.</p></div>
+    <div class="info-block"><h3>Naturschutz</h3><p>Die Parkanlage ist als schutzwürdiges Biotop kartiert (Nr. 5636-0139, mesophile Laubwälder).</p></div>
+    <div class="info-block"><h3>Öffnungszeiten</h3><p>Kostenfrei und ganzjährig zugänglich. Geführte Begehungen mit Frankenwaldverein und Obst- und Gartenbauverein.</p></div>
+    <div class="info-block"><h3>Förderung und Partner</h3><p>Das Vorhaben wird unterstützt durch:</p><div class="partner-logos"><div class="partner-logo">LEADER</div><div class="partner-logo">BLfD Bayern</div><div class="partner-logo">Oberfrankenstiftung</div><div class="partner-logo">Dt. Stiftung Denkmalschutz</div><div class="partner-logo">Frankenwaldverein</div></div></div>
+    <div class="info-block"><h3>Kontakt</h3><p>Gutsverwaltung Reitzenstein<br>Constantin Freiherr von Reitzenstein<br>Reitzenstein 76, 95188 Issigau<br>c.reitzenstein@boscor.de</p></div>
+  </div>
+</div>
+
+<div class="tabbar" id="tabbar">
+  <button class="tab-item active" onclick="showScreen('stations')" data-tab="stations"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg><span>Rundgang</span></button>
+  <button class="tab-item" onclick="showScreen('map')" data-tab="map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16M16 6v16"/></svg><span>Karte</span></button>
+  <button class="tab-item" onclick="showScreen('history')" data-tab="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg><span>Geschichte</span></button>
+  <button class="tab-item" onclick="showScreen('info')" data-tab="info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span>Info</span></button>
+</div>
+
+<script>
+var stations=[
+{nr:"P",title:"Prolog — Das Neue Tor",epoch:"Geplante Wiederherstellung",text:"Wir nähern uns dem Schlosspark Reitzenstein von der Dorfseite. Was wir sehen, ist ein baufälliges Wohnhaus, das den Blick auf die Parkanlage und das Schloss vollständig versperrt. Der Abriss dieses Gebäudes ist geplant — und damit eröffnet sich eine einmalige Chance.\n\nHinter dem Gebäude verbirgt sich der historische Zugang zum Schlosspark — heute verwildert und hinter einem einfachen Bretterzaun kaum als solcher erkennbar.\n\nDoch so soll es künftig aussehen: Ein neues, repräsentatives Tor aus Naturstein gibt den Blick frei auf das Schloss am Burgfelsen.",hero:"img/prolog.jpg",gallery:["img/fernsicht.jpg","img/prolog.jpg"],galleryLabels:["Heutige Fernsicht","Fotomontage: Neues Tor"],comparison:null},
+{nr:"1",title:"Der Bauerngarten",epoch:"Historischer Nutzgarten",text:"Durch das neue Tor gelangen wir zunächst in den sogenannten Bauerngarten. Dieser schlichte, von einer historischen Bruchsteinmauer gefasste Gartenraum liegt am Fuß des Schlossbergs. Ein alter Obstbaum spendet Schatten, die Rasenfläche öffnet sich zum Schloss hin.\n\nHier verbindet sich bäuerliche Nutzgartenkultur mit der herrschaftlichen Parkanlage — ein Übergangsraum, der die Besucher behutsam in die Welt des Schlossparks einführt.",hero:"img/bauerngarten.jpg",gallery:null,comparison:null},
+{nr:"2",title:"Englischer Landschaftsgarten",epoch:"Um 1893/97 angelegt",text:"Wir folgen dem Weg in den weitläufigsten Teil der Anlage: den Englischen Landschaftsgarten. Die historischen Aufnahmen zeigen, was hier einst angelegt wurde — geschwungene Spazierwege durch sorgfältig komponierten Baumbestand, Sichtachsen in die umgebende Landschaft.\n\nHeute ist davon nur noch die Grundstruktur ablesbar. Der Park ist stark verwildert, die historischen Wege sind überwachsen. Und doch: Die alten Bäume stehen noch, die Topografie ist unverändert.",hero:"img/landschaft.jpg",gallery:null,comparison:{hist:"img/landschaft_hist.jpg",now:"img/landschaft.jpg"}},
+{nr:"3",title:"Der Familienfriedhof",epoch:"Mehrere Jahrhunderte",text:"Der Weg führt uns den Burgberg hinauf. Zwischen dicht stehenden Laubbäumen erreichen wir einen besonderen Ort: den historischen Familienfriedhof derer von Reitzenstein. Grabsteine aus mehreren Jahrhunderten stehen zwischen wucherndem Unterwuchs.\n\nDie Fotomontage zeigt, wie der Friedhof nach einer behutsamen Freilegung wieder erlebbar werden kann — als Ort der Erinnerung und als Zeugnis der Familiengeschichte.",hero:"img/friedhof.jpg",gallery:null,comparison:{hist:"img/friedhof.jpg",now:"img/friedhof_montage.jpg",leftLabel:"Heute",rightLabel:"Nach Freilegung"}},
+{nr:"4",title:"Aufgang zum Schlosshof",epoch:"Historischer Aufgang",text:"Über einen Steig gelangen wir vom Burgberg hinauf zum eigentlichen Höhepunkt des Rundwegs. Die historische Aufnahme zeigt, was den Besucher hier einst empfing: eine prachtvolle Anlage mit Arkadengang, Pergola und dem imposanten Burgfelsen als natürlicher Kulisse.\n\nHeute ist dieser Bereich kaum wiederzuerkennen. Und doch: Die Grundstrukturen — der Fels, die Terrassierung, die Wegeführung — sind noch vorhanden.",hero:"img/aufgang.jpg",gallery:null,comparison:{hist:"img/aufgang_hist.jpg",now:"img/aufgang.jpg"}},
+{nr:"5",title:"Der Schlosshof",epoch:"Herzstück der Anlage",text:"Wir stehen nun im Schlosshof und blicken auf das Schloss Reitzenstein. Die historischen Fotografien zeigen die Anlage in ihrer Blütezeit: den markanten Turm, die gegliederte Fassade mit ihrem reichen Bauschmuck, den gestalteten Vorplatz.\n\nDas Schloss und sein unmittelbares Umfeld bilden das Herzstück der Anlage. Ihre Wiederherstellung und Zugänglichmachung ist ein Gewinn für die gesamte Region.",hero:"img/schlosshof.jpg",gallery:["img/schlosshof.jpg","img/schlosshof2.jpg"],galleryLabels:["Schlosshof Ansicht 1","Schlosshof Ansicht 2"],comparison:null},
+{nr:"6",title:"Der Barockgarten",epoch:"Mitte 18. Jahrhundert",text:"Vom Schlosshof führt der Blick auf den Barockgarten — den ältesten und formal gestaltetsten Teil der Parkanlage. Historisch war dies ein Schmuckgarten mit Pergola, Skulpturen, symmetrischen Beeten und Kieswegen.\n\nDie gute Nachricht: Hier sind erste Restaurierungsschritte bereits sichtbar. Die Kieswege sind wiederhergestellt, die Grundstruktur ist wieder ablesbar.",hero:"img/barock.jpg",gallery:null,comparison:{hist:"img/barock_hist.jpg",now:"img/barock.jpg"}},
+{nr:"F",title:"Finale — Das Schlosstor",epoch:"Historischer Ausgang",text:"Wir verlassen den Schlosspark durch das historische Schlosstor. Einst rahmten steinerne Pfeiler mit schmiedeeisernen Gittern einen repräsentativen Zugang, der den Rang der Anlage bereits von der Straße aus ankündigte.\n\nAuch heute noch stehen die Torpfeiler — sie sind Zeugen einer Baukultur, die es zu bewahren gilt.",hero:"img/schlosstor.jpg",gallery:null,comparison:{hist:"img/schlosstor_hist.jpg",now:"img/schlosstor.jpg"}}
+];
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+  document.getElementById('screen-'+id).classList.add('active');
+  window.scrollTo(0,0);
+  var tabbar=document.getElementById('tabbar');
+  tabbar.style.display=['stations','map','history','info','detail'].indexOf(id)>=0?'flex':'none';
+  document.querySelectorAll('.tab-item').forEach(function(t){t.classList.remove('active')});
+  var tabMap={stations:'stations',detail:'stations',map:'map',history:'history',info:'info'};
+  var at=tabMap[id];
+  if(at){var el=document.querySelector('.tab-item[data-tab="'+at+'"]');if(el)el.classList.add('active')}
+}
+
+function showStation(index){
+  var s=stations[index];
+  document.getElementById('detail-topbar-title').textContent='Station '+s.nr;
+  document.getElementById('detail-hero-img').src=s.hero;
+  document.getElementById('detail-badge').textContent=s.nr;
+  document.getElementById('detail-title').textContent=s.title;
+  document.getElementById('detail-epoch').textContent=s.epoch;
+  document.getElementById('detail-text').innerHTML=s.text.replace(/\n\n/g,'<br><br>');
+  var gc=document.getElementById('detail-gallery');
+  if(s.gallery&&s.gallery.length>1){
+    var gh='<div class="gallery-strip">';
+    s.gallery.forEach(function(img,i){gh+='<img src="'+img+'" alt="'+(s.galleryLabels?s.galleryLabels[i]:'')+'">'});
+    gh+='</div>';
+    if(s.galleryLabels)gh+='<div class="gallery-caption">'+s.galleryLabels.join(' · ')+'</div>';
+    gc.innerHTML=gh;gc.style.display='block';
+  }else{gc.innerHTML='';gc.style.display='none'}
+  var cc=document.getElementById('detail-comparison');
+  if(s.comparison){
+    var ll=s.comparison.leftLabel||'Historisch',rl=s.comparison.rightLabel||'Heute';
+    cc.innerHTML='<div class="comparison-label">Bildvergleich</div><div class="comparison-container" id="comp-container"><img src="'+s.comparison.now+'" alt="'+rl+'"><div class="comparison-overlay" id="comp-overlay"><img src="'+s.comparison.hist+'" alt="'+ll+'"></div><div class="slider-line" id="comp-line"></div><div class="slider-circle" id="comp-circle"></div><div class="comparison-tag left">'+ll+'</div><div class="comparison-tag right">'+rl+'</div></div><div class="comparison-labels-row"><span>'+ll+'</span><span>'+rl+'</span></div>';
+    cc.style.display='block';
+    requestAnimationFrame(initSlider);
+  }else{cc.innerHTML='';cc.style.display='none'}
+  document.getElementById('audio-progress-fill').style.width='0%';
+  document.getElementById('audio-time').textContent='0:00 / 0:30';
+  audioPlaying=false;
+  showScreen('detail');
+}
+
+function initSlider(){
+  var container=document.getElementById('comp-container');
+  if(!container)return;
+  var overlay=document.getElementById('comp-overlay'),line=document.getElementById('comp-line'),circle=document.getElementById('comp-circle');
+  function update(x){var rect=container.getBoundingClientRect();var pct=((x-rect.left)/rect.width)*100;pct=Math.max(2,Math.min(98,pct));overlay.style.width=pct+'%';line.style.left=pct+'%';circle.style.left=pct+'%'}
+  container.addEventListener('pointerdown',function(e){e.preventDefault();update(e.clientX);function move(ev){update(ev.clientX)}function up(){window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up)}window.addEventListener('pointermove',move);window.addEventListener('pointerup',up)});
+}
+
+var audioPlaying=false,audioInterval=null,audioProgress=0;
+function toggleAudio(){
+  audioPlaying=!audioPlaying;
+  var fill=document.getElementById('audio-progress-fill'),time=document.getElementById('audio-time'),btn=document.getElementById('audio-play-btn');
+  if(audioPlaying){
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="#fff"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+    audioInterval=setInterval(function(){audioProgress=Math.min(100,audioProgress+2);fill.style.width=audioProgress+'%';var secs=Math.floor(audioProgress*0.3);time.textContent='0:'+String(secs).padStart(2,'0')+' / 0:30';if(audioProgress>=100){clearInterval(audioInterval);audioPlaying=false;btn.innerHTML='<svg viewBox="0 0 24 24" fill="#fff"><polygon points="8,5 19,12 8,19"/></svg>';audioProgress=0}},200);
+  }else{clearInterval(audioInterval);btn.innerHTML='<svg viewBox="0 0 24 24" fill="#fff"><polygon points="8,5 19,12 8,19"/></svg>'}
+}
+document.getElementById('tabbar').style.display='none';
+</script>
+</body>
+</html>
